@@ -8,7 +8,7 @@ interface TypeFieldState {
 interface TypeFieldProps {
   initialState: string,
   textHandle?: Function,
-  setTextHandle?: Function
+  parentText?: string
 }
 
 class TypeField extends React.Component<TypeFieldProps, TypeFieldState> {
@@ -19,9 +19,17 @@ class TypeField extends React.Component<TypeFieldProps, TypeFieldState> {
     }
 
     handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-      this.setState({text: e.target.value})
+      if (this.state.text !== e.target.value)
+        this.setState({text: e.target.value})
+
       if(this.props.textHandle !== undefined)
         this.props.textHandle(e.target.value)
+    }
+
+    componentDidUpdate() {
+      if (this.props.parentText !== undefined && this.state.text !== this.props.parentText) {
+        this.setState({text: this.props.parentText})
+      }
     }
 
     render() {

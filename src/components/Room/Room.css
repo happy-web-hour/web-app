@@ -1,0 +1,11 @@
+.Room {
+    text-align: center;
+}
+
+.Room-header {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    font-size: calc(10px + 2vmin);
+    color: white;
+}

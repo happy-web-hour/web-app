@@ -1,3 +1,6 @@
 import App from "./app/App"
+import Room from "./Room/Room"
 
-export default App
+export {
+    App, Room
+}
