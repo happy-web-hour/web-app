@@ -1,0 +1,12 @@
+.Typefield-input-container {
+    padding: 3px;
+}
+
+.Typefield-input {
+    border: transparent;
+    border-radius: 20px;
+    text-align: center;
+    background: #ffffff;
+    min-width: 326px;
+    min-height: 47px;
+}
