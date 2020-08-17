@@ -102,9 +102,15 @@ class Room extends React.Component<RoomProps, RoomState> {
         return (
             <div className="Room">
             <header className="Room-header">
-                {this.state.roomState!.map((room)=>{
-                    return <RoomButton title={room.name} users={room.users}></RoomButton>
-                })}
+                <div className="App-title-container">
+                    <h1 className="App-title">Happy Web Hour</h1>
+                </div>
+                <strong>{this.state.userName}</strong>
+                <div className="Room-master-container">
+                    {this.state.roomState!.map((room)=>{
+                        return <RoomButton title={room.name} users={room.users}></RoomButton>
+                    })}
+                </div>
             </header>
             </div>
         )

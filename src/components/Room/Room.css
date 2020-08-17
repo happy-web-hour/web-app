@@ -4,8 +4,10 @@
 
 .Room-header {
     min-height: 100vh;
+}
+
+.Room-master-container {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    font-size: calc(10px + 2vmin);
-    color: white;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 0 10vw 0 10vw;
 }

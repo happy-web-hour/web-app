@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {MouseEvent} from 'react'
 
 import './RoomButton.css'
 
@@ -18,6 +18,12 @@ class RoomButton extends React.Component<RoomButtonProps, RoomButtonState> {
             title: "",
             users: []
         }
+        this.handleClick = this.handleClick.bind(this)
+    }
+
+    handleClick(e: MouseEvent) {
+        this.setState({users: this.props.users})
+        console.info(this.state)
     }
 
     render() {
@@ -26,7 +32,7 @@ class RoomButton extends React.Component<RoomButtonProps, RoomButtonState> {
         return (
             <div className="RoomButton-container">
                 <div className="RoomButton-title">{title}</div>
-                <button className="RoomButton-users-button">
+                <button className="RoomButton-users-button" onClick={this.handleClick} >
                     {users!.join(", ")}
                 </button>
             </div>
