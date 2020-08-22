@@ -1,0 +1,36 @@
+.Chat-container {
+    position: relative;
+    width: 100%;
+}
+
+.Chat-background {
+    background-color: #4FA9EA;
+    border-radius: 20px;
+    width: 600px;
+    height: 80vh;
+    padding: 15px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-gap: 10px;
+    overflow: hidden;
+}
+
+.Chat-room-name,
+.Chat-history-container,
+.Chat-textarea-container {
+    background-color: #E9F6FF;
+    border-radius: 20px;
+    padding: 10px;
+}
+
+.Chat-textarea-container {
+    min-height: 50px;
+}
+
+.Chat-textarea-container:hover {
+    min-height: 100px;
+}
+
+.Chat-history-container {
+    overflow: auto;
+}

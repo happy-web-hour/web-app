@@ -1,0 +1,12 @@
+.ChatTextArea-input-container {
+    padding: 3px;
+    height: 100%;
+}
+
+.ChatTextArea-input {
+    border: transparent;
+    text-align: left;
+    background: #ffffff;
+    width: 100%;
+    height: 100%;
+}

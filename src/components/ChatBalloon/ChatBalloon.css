@@ -1,0 +1,67 @@
+.ChatBalloon-line-container-self,
+.ChatBalloon-line-container-user,
+.ChatBalloon-line-container-sys {
+    display: flex;
+
+}
+
+.ChatBalloon-line-container-self,
+.ChatBalloon-line-container-sys {
+    justify-content: flex-end;
+}
+
+.ChatBalloon-line-container-user {
+    justify-content: flex-start;
+}
+
+.ChatBalloon-container-self,
+.ChatBalloon-container-user,
+.ChatBalloon-container-sys {
+    background-color: #78DFFF;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 5px;
+    border-radius: 0px 14px;
+    position: relative;
+    width: fit-content;
+    margin: 5px;
+    padding: 15px;
+}
+
+.ChatBalloon-container-sys {
+    background-color: transparent;
+}
+
+.ChatBalloon-container-self {
+    background-color: #f6d4ad;
+    border-radius: 14px 0;
+}
+
+.ChatBalloon-username-self,
+.ChatBalloon-timestamp-self {
+    text-align: right;
+}
+
+.ChatBalloon-username-user,
+.ChatBalloon-usermessage-self,
+.ChatBalloon-usermessage-user,
+.ChatBalloon-timestamp-user {
+    text-align: left;
+}
+
+.ChatBalloon-username-sys,
+.ChatBalloon-usermessage-sys,
+.ChatBalloon-timestamp-sys {
+    text-align: right;
+    font-size: small;
+    font-weight: bold;
+}
+
+.ChatBalloon-timestamp-sys {
+    font-weight: lighter;
+}
+
+.ChatBalloon-usermessage-self,
+.ChatBalloon-usermessage-user {
+    padding: 15px 0;
+}
