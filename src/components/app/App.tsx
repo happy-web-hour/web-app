@@ -64,13 +64,14 @@ class AppClass extends React.Component<AppProps, AppState> {
     });
   }
   enterHandle() {
+    const header = new Headers()
+    header.append("content-type", "application/json")
+    const body = JSON.stringify({name: this.state.userName})
     const options: RequestInit = {
-      method: "PATCH",
-      body: JSON.stringify({ name: this.state.userName }),
-      headers: {
-        'Content-Type': "application/json",
-        Accept: "*/*"
-      }
+      method: "POST",
+      body: body,
+      headers: header,
+      redirect: 'follow'
     };
     const url = `${this.pinner}/${this.state.roomName}`;
     console.info(options)
