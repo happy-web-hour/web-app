@@ -29,13 +29,13 @@ class Chat extends React.Component<ChatProps, ChatState> {
   chatApi : ChatApi
   pinnerApi : Pinner
   chatHistory : JSX.Element[]
-
+  messageEnd : HTMLDivElement | null
   constructor(props: ChatProps) {
     super(props);
     this.state = {
       lastMessageId: "",
       chatHistory: [],
-      allMessageId: []
+      allMessageId: [],
     };
     this.roomApi = new RoomApi()
     this.chatApi = new ChatApi()
@@ -45,6 +45,7 @@ class Chat extends React.Component<ChatProps, ChatState> {
     this.handleChatSendMsg = this.handleChatSendMsg.bind(this)
     this.checkIfExists = this.checkIfExists.bind(this)
     this.getMsgType = this.getMsgType.bind(this)
+    this.messageEnd = null
   }
 
   handleChatSendMsg(text: string){
@@ -53,23 +54,24 @@ class Chat extends React.Component<ChatProps, ChatState> {
   }
 
   getMsgType(isSysType: boolean, msgUserId: string) : string {
-    return isSysType === true ? "sys" : msgUserId.match(this.props.userId) === null ? "user" : "sys"
+    return isSysType === true ? "sys" : msgUserId.match(this.props.userId) === null ? "user" : "self"
   }
 
   getMessages() {
     if(this.props.roomId){
       if(this.state.allMessageId.length > 0){
-        this.chatApi.getMsgFromId(this.props.roomId, this.state.lastMessageId)
+        this.chatApi.getMsgFromId(this.props.roomId, this.state.allMessageId[this.state.allMessageId.length])
           .then((messages)=> {
             messages.forEach((message)=> {
               if(this.checkIfExists(message.messageId) === false){
                 const msgType = this.getMsgType(message.systemMessage, message.userId)
+                let timestamp = new Date(message.timestamp)
                 this.chatHistory.push(<
                   ChatBalloon
                   type={msgType} 
-                  userName={"user name"} 
+                  userName={"..."} 
                   msg={message.message} 
-                  timestamp={String(message.timestamp)}
+                  timestamp={timestamp}
                   />)
                 let ids = this.state.allMessageId
                 ids.push(message.messageId)
@@ -83,12 +85,13 @@ class Chat extends React.Component<ChatProps, ChatState> {
             messages.forEach((message)=> {
               if(this.checkIfExists(message.messageId) === false) {
                 const msgType = this.getMsgType(message.systemMessage, message.userId)
+                let timestamp = new Date(message.timestamp)
                 this.chatHistory.push(<
                   ChatBalloon
                   type={msgType} 
-                  userName={"user name"} 
+                  userName={"..."} 
                   msg={message.message} 
-                  timestamp={String(message.timestamp)}
+                  timestamp={timestamp}
                   />)
                 let ids = this.state.allMessageId
                 ids.push(message.messageId)
@@ -117,6 +120,8 @@ class Chat extends React.Component<ChatProps, ChatState> {
       this.props.chatUpdated()
     }
     this.getMessages()
+    if(this.messageEnd)
+      this.messageEnd.scrollIntoView({behavior:"smooth"})
   }
 
   render() {
@@ -129,7 +134,7 @@ class Chat extends React.Component<ChatProps, ChatState> {
       <div className="Chat-container">
         <div className="Chat-background">
           <div className="Chat-room-name">{roomName}</div>
-          <div className="Chat-history-container">
+          <div className="Chat-history-container" ref={(el)=> {this.messageEnd = el}}>
             {this.chatHistory}
           </div>
           <div className="Chat-textarea-container">

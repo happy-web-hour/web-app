@@ -8,7 +8,7 @@ interface RoomButtonProps {
     title: string,
     roomId: string,
     roomName: string,
-    users?: string[],
+    users: string[],
     userId: string,
     pinId: string,
     handleGroupChange: Function,
@@ -16,7 +16,7 @@ interface RoomButtonProps {
 }
 interface RoomButtonState {
     title: string,
-    users?: string[],
+    users: string[],
     roomId: string
 }
 
@@ -42,32 +42,14 @@ class RoomButton extends React.Component<RoomButtonProps, RoomButtonState> {
         this.props.handleGroupChange(this.state.roomId, this.props.roomName)
     }
 
-    // componentDidUpdate() {
-    //     if(this.props.actualGroup !== "" && this.props.actualGroup !== this.state.roomId) {
-    //         if(this.state.users?.find(user => user === this.props.userId)) {
-    //             console.info(this.state.users, this.props.userId)
-    //             let index = this.state.users.indexOf(this.props.userId)
-    //             console.info(index)
-    //             // if (index >= -1)
-    //             this.setState({users: this.state.users.splice(index)})
-    //             this.roomApi.removeUser(this.state.roomId, this.props.userId)
-    //         }
-    //     }
-    // }
-
     render() {
         const title = this.props.title
         const users = this.props.users
-        let usersState = this.state.users
-        this.pinner.getUsers(this.props.pinId, users!)
-            .then(data => {
-                this.setState({users: data.map((d) => d.name)})
-            })
         return (
             <div className="RoomButton-container">
                 <div className="RoomButton-title">{title}</div>
                 <button className="RoomButton-users-button" onClick={this.handleClick} >
-                    {usersState!.join(', ')}
+                    {users?.join(', ')}
                 </button>
             </div>
         )

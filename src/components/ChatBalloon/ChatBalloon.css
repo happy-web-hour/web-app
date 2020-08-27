@@ -42,6 +42,11 @@
     text-align: right;
 }
 
+.ChatBalloon-timestamp-self,
+.ChatBalloon-timestamp-user {
+    font-size: 10pt;
+}
+
 .ChatBalloon-username-user,
 .ChatBalloon-usermessage-self,
 .ChatBalloon-usermessage-user,
