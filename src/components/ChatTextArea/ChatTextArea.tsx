@@ -5,7 +5,9 @@ interface ChatTextAreaState {
   text: string;
 }
 
-interface ChatTextAreaProps {}
+interface ChatTextAreaProps {
+  sendMsg: Function
+}
 
 class ChatTextArea extends React.Component<ChatTextAreaProps, ChatTextAreaState> {
     constructor(props: ChatTextAreaProps) {
@@ -18,14 +20,15 @@ class ChatTextArea extends React.Component<ChatTextAreaProps, ChatTextAreaState>
     handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
       if (this.state.text !== e.target.value)
         this.setState({text: e.target.value})
-      e.preventDefault()
-    }
-
-    handleKeyPress(e: React.KeyboardEvent<HTMLTextAreaElement>){
-      if(e.key === 'Enter'){
-        // TODO: call api and send message
-        this.setState({text: ""})
+        e.preventDefault()
       }
+      
+      handleKeyPress(e: React.KeyboardEvent<HTMLTextAreaElement>){
+        if(e.key === 'Enter'){
+          const txt = this.state.text
+          this.props.sendMsg(txt)
+          this.setState({text: ""})
+        }
     }
 
     render() {

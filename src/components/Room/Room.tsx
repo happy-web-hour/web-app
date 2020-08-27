@@ -1,7 +1,8 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
 import RoomButton from "../RoomButton";
 import Chat from "../Chat"
+import {RoomApi} from "../../api"
+import {Pinner} from "../../api"
 import "./Room.css";
 
 interface RoomProps {
@@ -13,93 +14,114 @@ interface RoomProps {
     state: {
       roomName: string;
       userName: string;
+      userId: string
     };
   };
 }
 
 interface RoomStateModel {
-  name: string;
-  users: string[];
+  name: string,
+  users: string[],
+  roomId: string
 }
 
 interface RoomState {
-  userName?: string;
-  roomName?: string;
-  roomState?: RoomStateModel[];
+  userName: string;
+  userId: string,
+  roomName: string;
+  roomState: RoomStateModel[];
+  actualGroup: string,
+  actualGroupName: string,
+  chatVisible: boolean,
+  chatNeedUpdate: boolean,
 }
 
 class Room extends React.Component<RoomProps, RoomState> {
+  roomApi : RoomApi
+  pinner : Pinner
   constructor(props: RoomProps) {
     super(props);
     this.state = {
       userName: "",
+      userId: "",
       roomName: "",
       roomState: [],
+      actualGroup: "",
+      actualGroupName: "",
+      chatVisible: false,
+      chatNeedUpdate: false
     };
-  }
-
-  useQuery() {
-    return new URLSearchParams(useLocation().search);
+    this.setActualGroup = this.setActualGroup.bind(this)
+    this.chatUpdated = this.chatUpdated.bind(this)
+    this.roomApi = new RoomApi()
+    this.pinner = new Pinner()
   }
 
   componentDidMount() {
-    this.setState({
-      roomName: this.props.location.state.roomName,
-      userName: this.props.location.state.userName,
-      roomState: [
-        {
-          name: "sala 01",
-          users: [],
-        },
-        {
-          name: "sala 02",
-          users: [],
-        },
-        {
-          name: "sala 03",
-          users: [],
-        },
-        {
-          name: "sala 04",
-          users: [],
-        },
-        {
-          name: "sala 05",
-          users: [],
-        },
-        {
-          name: "sala 06",
-          users: [],
-        },
-        {
-          name: "sala 07",
-          users: [],
-        },
-        {
-          name: "sala 08",
-          users: [],
-        },
-        {
-          name: "sala 09",
-          users: [],
-        },
-        {
-          name: "sala 10",
-          users: [],
-        },
-        {
-          name: "sala 11",
-          users: [],
-        },
-        {
-          name: "sala 12",
-          users: [],
-        },
-      ],
-    });
+    try {
+      setInterval(async () => {
+        this.roomApi.getAllRoomsByPin(this.props.location.state.roomName)
+          .then((data) => {
+            let roomData : RoomStateModel[] = []
+            data.forEach(d => {
+              roomData.push({
+                name: d.name,
+                roomId: d.roomId,
+                users: d.users
+              })
+            })
+            if (this.state.roomName !== this.props.location.state.roomName
+              || this.state.userName !== this.props.location.state.userName
+              || this.state.userId !== this.props.location.state.userId
+              || this.state.roomState !== roomData)
+              this.setState({
+                roomName: this.props.location.state.roomName,
+                userName: this.props.location.state.userName,
+                userId: this.props.location.state.userId,
+                roomState: roomData
+              })
+          })
+      }, 2500)
+    } catch(e) {
+      console.error(e)
+    }
+  }
+
+  componentDidUpdate() {
+    if(this.state.chatVisible === false && this.state.actualGroup !== "") {
+      this.setState({chatVisible: true, chatNeedUpdate: true})
+    }
+  }
+
+  setActualGroup(groupId: string, groupName: string) {
+    // check and remove from oldest group
+    if(this.state.actualGroup !== "" && this.state.actualGroup !== groupId)
+      this.roomApi.removeUser(this.state.actualGroup, this.state.userId)
+
+    // add to new one
+    this.setState({actualGroup: groupId, actualGroupName: groupName, chatNeedUpdate: true})
+    this.roomApi.insertNewUser(groupId, this.state.userId)
+  }
+
+  chatUpdated() {
+    this.setState({chatNeedUpdate: false})
   }
 
   render() {
+    let btns: JSX.Element[] = []
+    this.state.roomState.forEach(room => {
+      btns.push(<
+        RoomButton 
+          pinId={this.state.roomName} 
+          title={room.name} 
+          users={room.users} 
+          roomId={room.roomId} 
+          userId={this.state.userId} 
+          actualGroup={this.state.actualGroup} 
+          roomName={room.name} 
+          handleGroupChange={this.setActualGroup}
+      />)
+    })
     return (
       <div className="Room">
         <header className="Room-header">
@@ -109,13 +131,9 @@ class Room extends React.Component<RoomProps, RoomState> {
           <strong>{this.state.userName}</strong>
           <div className="Room-chat-container">
             <div className="Room-master-container">
-              {this.state.roomState!.map((room) => {
-                return (
-                  <RoomButton title={room.name} users={room.users}></RoomButton>
-                );
-              })}
+              {btns}
             </div>
-            <Chat roomId="0" roomName="Sala 01"></Chat>
+            <Chat pinId={this.state.roomName} userId={this.state.userId} roomId={this.state.actualGroup} roomName={this.state.actualGroupName} visibility={this.state.chatVisible} needUpdate={this.state.chatNeedUpdate} chatUpdated={this.chatUpdated}></Chat>
           </div>
         </header>
       </div>

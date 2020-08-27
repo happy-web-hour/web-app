@@ -2,6 +2,7 @@ import React, { MouseEvent } from "react";
 import TypeField from "../TypeField";
 import Button from "../Button";
 import { Redirect } from "react-router";
+import { Pinner } from "../../api";
 import "./App.css";
 
 interface AppState {
@@ -22,7 +23,7 @@ interface PatchPin {
 }
 
 class AppClass extends React.Component<AppProps, AppState> {
-  pinner = "http://localhost:8082/pin";
+  private pinner : Pinner
   constructor(props: AppProps) {
     super(props);
     this.state = {
@@ -31,6 +32,7 @@ class AppClass extends React.Component<AppProps, AppState> {
       redirect: false,
       userId: "",
     };
+    this.pinner = new Pinner()
   }
 
   _makehash(length: Number) {
@@ -56,33 +58,20 @@ class AppClass extends React.Component<AppProps, AppState> {
   }
 
   newRoomHandle() {
-    const options: RequestInit = {
-      method: "POST",
-    };
-    this.apiAccess<PostPin>(this.pinner, options).then((data) => {
-      this.setState({ roomName: data.pin });
-    });
+    this.pinner.createNewHappyHour()
+      .then(data => {
+        this.setState({ roomName: data.pin });
+      })
   }
   enterHandle() {
-    const header = new Headers()
-    header.append("content-type", "application/json")
-    const body = JSON.stringify({name: this.state.userName})
-    const options: RequestInit = {
-      method: "POST",
-      body: body,
-      headers: header,
-      redirect: 'follow'
-    };
-    const url = `${this.pinner}/${this.state.roomName}`;
-    console.info(options)
-    this.apiAccess<PatchPin>(url, options).then((data) => {
-      this.setState({
-        userName: data.name,
-        userId: data.userId,
-        redirect: true,
-      });
-      console.info(data);
-    });
+    this.pinner.updateHappyHour(this.state.roomName, {name: this.state.userName})
+      .then(data => {
+        this.setState({
+          userName: data.name,
+          userId: data.userId,
+          redirect: true
+        })
+      })
   }
 
   render() {
@@ -94,6 +83,7 @@ class AppClass extends React.Component<AppProps, AppState> {
             state: {
               roomName: this.state.roomName,
               userName: this.state.userName,
+              userId: this.state.userId
             },
           }}
         />
@@ -107,18 +97,18 @@ class AppClass extends React.Component<AppProps, AppState> {
             </div>
             <div className="Input-container">
               <TypeField
-                initialState="Digite seu Nome"
+                initialState="Digite seu nome"
                 textHandle={(text: string) => this.setState({ userName: text })}
               />
               <TypeField
-                initialState="Cole o código da sua sala"
+                initialState="Clique em 'Novo PIN' ou cole um PIN existente"
                 textHandle={(text: string) => this.setState({ roomName: text })}
                 parentText={this.state.roomName}
               />
             </div>
             <div className="Buttons-container">
               <Button
-                text="Nova Sala"
+                text="Novo PIN"
                 onClick={(e: MouseEvent) => this.newRoomHandle()}
               ></Button>
               <Button

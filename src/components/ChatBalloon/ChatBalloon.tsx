@@ -20,16 +20,27 @@ class ChatBalloon extends React.Component<ChatBalloonProps, ChatBalloonState> {
     const type = this.props.type;
     const userName = this.props.userName;
     const msg = this.props.msg;
-    const timestamp = this.props.timestamp;
-    return (
-      <div className={`ChatBalloon-line-container-${type}`}>
-        <div className={`ChatBalloon-container-${type}`}>
-          <div className={`ChatBalloon-username-${type}`}>{userName}</div>
-          <div className={`ChatBalloon-usermessage-${type}`}>{msg}</div>
-          <div className={`ChatBalloon-timestamp-${type}`}>{timestamp}</div>
+    const timestamp = new Date(this.props.timestamp || "").getTime();
+    if(type !== "sys"){
+      return (
+        <div className={`ChatBalloon-line-container-${type}`}>
+          <div className={`ChatBalloon-container-${type}`}>
+            <div className={`ChatBalloon-username-${type}`}>{userName}</div>
+            <div className={`ChatBalloon-usermessage-${type}`}>{msg}</div>
+            <div className={`ChatBalloon-timestamp-${type}`}>{timestamp}</div>
+          </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className={`ChatBalloon-line-container-${type}`}>
+          <div className={`ChatBalloon-container-${type}`}>
+            <div className={`ChatBalloon-usermessage-${type}`}>{msg}</div>
+            <div className={`ChatBalloon-timestamp-${type}`}>{timestamp}</div>
+          </div>
+        </div>
+      );
+    }
   }
 }
 

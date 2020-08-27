@@ -1,0 +1,5 @@
+{
+    "pinner": "http://localhost:8082/pin",
+    "room": "http://localhost:8081/room",
+    "chat": "http://localhost:8080/chat"
+}
